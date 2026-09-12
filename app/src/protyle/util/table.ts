@@ -1410,7 +1410,7 @@ export const getTableRangeHTML = (tableElement: HTMLElement, startCell: HTMLElem
 
     // 5. 按新行列号输出。需建立输出网格以正确处理 rowspan 占位：
     // 当某单元格 newRowspan > 1 跨多行时，后续行对应列要插入 class="fn__none" 占位单元格
-    //（与思源内部合并单元格规范一致），否则行列对应关系会错乱。
+    //（与KMG内部合并单元格规范一致），否则行列对应关系会错乱。
     // 输出时会根据规范化后的 thead/tbody 选择 th/td，保证结果可直接解析为独立表格块。
     if (outCells.length === 0) {
         return "";

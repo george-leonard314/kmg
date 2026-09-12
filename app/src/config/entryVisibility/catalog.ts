@@ -98,11 +98,11 @@ const sortChildren = (inheritKey?: "sortByFiletree" | "sortByParent") => [
 
 const exportChildren = () => [
     node("exportTemplate", lang("template")),
-    node("exportSiYuanZip", literal("SiYuan .sy.zip")),
+    node("exportSiYuanZip", literal("KMG .sy.zip")),
     node("exportMarkdown", literal("Markdown .zip")),
     node("exportImage", lang("image")),
     node("exportPDF", literal("PDF")),
-    node("exportHTML_SiYuan", literal("HTML (SiYuan)"), false),
+    node("exportHTML_SiYuan", literal("HTML (KMG)"), false),
     node("exportHTML_Markdown", literal("HTML (Markdown)"), false),
     node("exportWord", literal("Word .docx")),
     node("exportMore", lang("more"), false, [
@@ -130,7 +130,7 @@ const openChildren = () => [
 ];
 
 const importChildren = () => [
-    node("importSiYuanZip", literal("SiYuan .sy.zip")),
+    node("importSiYuanZip", literal("KMG .sy.zip")),
     node("importMarkdownZip", literal("Markdown .zip")),
     node("importMarkdownDoc", () => `Markdown ${window.siyuan.languages.doc}`),
     node("importMarkdownFolder", () => `Markdown ${window.siyuan.languages.folder}`),
@@ -150,7 +150,7 @@ const docTreeCommon = (multi = false) => [
     ]),
     node("openBy", lang("openBy"), true, openChildren()),
     node("export", lang("export"), true, multi ? [
-        node("exportSiYuanZip", literal("SiYuan .sy.zip")),
+        node("exportSiYuanZip", literal("KMG .sy.zip")),
         node("exportMarkdown", literal("Markdown .zip")),
     ] : exportChildren()),
 ];
@@ -660,7 +660,7 @@ export const entryCatalog: IEntryCatalogSection[] = [
             node("showInFolder", lang("showInFolder")),
             node("import", lang("import"), true, importChildren()),
             node("export", lang("export"), true, [
-                node("exportSiYuanZip", literal("SiYuan .sy.zip")),
+                node("exportSiYuanZip", literal("KMG .sy.zip")),
                 node("exportMarkdown", literal("Markdown .zip")),
             ]),
         ],
@@ -677,7 +677,7 @@ export const entryCatalog: IEntryCatalogSection[] = [
             node("delete", lang("delete")),
             separator("separator_2"),
             node("export", lang("export"), true, [
-                node("exportSiYuanZip", literal("SiYuan .sy.zip")),
+                node("exportSiYuanZip", literal("KMG .sy.zip")),
                 node("exportMarkdown", literal("Markdown .zip")),
             ]),
         ],

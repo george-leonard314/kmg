@@ -1,4 +1,4 @@
-// SiYuan - From thought to insight, with agents
+// KMG - From thought to insight, with agents
 // Copyright (c) 2020-present, b3log.org
 //
 // This program is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ const appDir = path.dirname(app.getAppPath());
 const isDevEnv = process.env.NODE_ENV === "development";
 const simulateRosetta = process.argv.includes("--simulate-rosetta");
 const appVer = app.getVersion();
-const confDir = path.join(app.getPath("home"), ".config", "siyuan");
+const confDir = path.join(app.getPath("home"), ".config", "kmg");
 const windowStatePath = path.join(confDir, "windowState.json");
 const appCrashLogPath = path.join(confDir, "app.crash.log");
 const appCrashMarkerPath = path.join(confDir, "app.crash.json");
@@ -648,13 +648,13 @@ const bindSpellcheckContextMenu = (contents) => {
 
 remote.initialize();
 
-// Electron 相关文件夹名称改为 `SiYuan-Electron` https://github.com/siyuan-note/siyuan/issues/3349
-// getPath("userData") 会创建空的 SiYuan 目录，改为 app.getPath("appData")
+// Electron 相关文件夹名称改为 `KMG-Electron` https://github.com/siyuan-note/siyuan/issues/3349
+// getPath("userData") 会创建空的 KMG 目录，改为 app.getPath("appData")
 app.setPath("userData", path.join(app.getPath("appData"), app.getName() + "-Electron"));
 
 if (process.platform === "win32") {
     // Windows 需要设置 AppUserModelId 才能正确显示应用名称和应用图标 https://github.com/siyuan-note/siyuan/issues/17022
-    app.setAppUserModelId("org.b3log.siyuan");
+    app.setAppUserModelId("org.kmg.notes");
 }
 
 if (!app.requestSingleInstanceLock()) {
@@ -721,7 +721,7 @@ try {
     }
 } catch (e) {
     console.error(e);
-    require("electron").dialog.showErrorBox("创建配置目录失败 Failed to create config directory", "思源需要在用户家目录下创建配置文件夹（~/.config/siyuan），请确保该路径具有写入权限。\n\nSiYuan needs to create a configuration folder (~/.config/siyuan) in the user's home directory. Please make sure that the path has write permissions.");
+    require("electron").dialog.showErrorBox("创建配置目录失败 Failed to create config directory", "KMG需要在用户家目录下创建配置文件夹（~/.config/siyuan），请确保该路径具有写入权限。\n\nSiYuan needs to create a configuration folder (~/.config/siyuan) in the user's home directory. Please make sure that the path has write permissions.");
     app.exit();
 }
 
@@ -894,7 +894,7 @@ const getAppWindow = () => {
 };
 
 const setNonDarwinApplicationMenu = () => {
-    const productName = "SiYuan";
+    const productName = "KMG";
     const template = [{
         label: productName, submenu: [{
             label: `About ${productName}`, role: "about",
@@ -922,7 +922,7 @@ const applyMacAppMenu = (sync) => {
         role: "appMenu",
         label: app.name,
         submenu: [
-            {role: "about", label: sync.i18n.about || "About SiYuan"},
+            {role: "about", label: sync.i18n.about || "About KMG"},
             ...(sync.readonly ? [] : [{
                 label: sync.i18n.config || "Settings",
                 click: () => {
@@ -940,11 +940,11 @@ const applyMacAppMenu = (sync) => {
                 },
                 ...withHotkey(sync.hotkey.toggleWin),
             },
-            {role: "hide", label: sync.i18n.hide || "Hide SiYuan"},
+            {role: "hide", label: sync.i18n.hide || "Hide KMG"},
             {role: "hideOthers", label: sync.i18n.hideOthers || "Hide Others"},
             {role: "unhide", label: sync.i18n.showAll || "Show All"},
             {type: "separator"},
-            {role: "quit", label: sync.i18n.quit || "Quit SiYuan"},
+            {role: "quit", label: sync.i18n.quit || "Quit KMG"},
         ],
     }, {
         role: "editMenu",
@@ -1112,7 +1112,7 @@ const loadAppleSiliconWarningLanguages = (requestedLanguage) => {
     }
     return {
         arm64TranslationTitle: "Install the Apple silicon version",
-        arm64TranslationMessage: "SiYuan is running the Intel version through Rosetta. This may significantly " +
+        arm64TranslationMessage: "KMG is running the Intel version through Rosetta. This may significantly " +
             "reduce performance. Please use the Apple silicon version",
         downloadAppleSilicon: "Download the Apple silicon version",
     };
@@ -1822,7 +1822,7 @@ const resetSystemShutdown = (ports) => {
     systemShutdownState = systemShutdownNone;
     gracefulSystemShutdownPromise = undefined;
     keepAppOpenDuringSystemShutdown = false;
-    writeLog("system shutdown canceled because SiYuan failed to exit gracefully [ports=" + ports.join(",") + "]");
+    writeLog("system shutdown canceled because KMG failed to exit gracefully [ports=" + ports.join(",") + "]");
     ports.forEach((port) => {
         const workspace = workspaces.find((item) => port.toString() === item.port.toString());
         if (workspace && workspace.browserWindow && !workspace.browserWindow.isDestroyed()) {
@@ -1890,7 +1890,7 @@ const beginForcedSystemShutdown = () => {
 };
 
 if (process.platform === "win32") {
-    // Windows 关机、重启或注销时取消本次会话结束，等待内核安全退出后再关闭思源。
+    // Windows 关机、重启或注销时取消本次会话结束，等待内核安全退出后再关闭KMG。
     app.on("browser-window-created", (event, window) => {
         window.on("query-session-end", (sessionEvent) => {
             writeLog("query-session-end");
@@ -2021,7 +2021,7 @@ const initMainWindow = (kernel = kernelPort, remoteAuthenticated = true) => {
 
     // 创建主窗体
     const currentWindow = new BrowserWindow({
-        title: "SiYuan",
+        title: "KMG",
         show: false,
         width: windowState.width,
         height: windowState.height,
@@ -2053,7 +2053,7 @@ const initMainWindow = (kernel = kernelPort, remoteAuthenticated = true) => {
         writeLog("window position [x=" + x + ", y=" + y + "]");
         currentWindow.setPosition(x, y);
     }
-    currentWindow.webContents.userAgent = "SiYuan/" + appVer + " https://b3log.org/siyuan Electron " + currentWindow.webContents.userAgent;
+    currentWindow.webContents.userAgent = "KMG/" + appVer + " https://b3log.org/siyuan Electron " + currentWindow.webContents.userAgent;
 
     // 加载主界面。setProxy 用超时兜底包装：Electron 在某些系统代理配置下 session.setProxy 可能永久
     // pending（既不 resolve 也不 reject），会导致 loadURL 永不执行，主窗口卡在启动页无法显示。
@@ -2367,7 +2367,7 @@ const initKernel = (workspace, port, lang, safeMode) => {
         const kernelName = "win32" === process.platform ? "SiYuan-Kernel.exe" : "SiYuan-Kernel";
         const kernelPath = path.join(appDir, "kernel", kernelName);
         if (!fs.existsSync(kernelPath)) {
-            showErrorWindow("内核程序丢失", "Kernel program is missing", `<div>内核程序丢失，请重新安装思源，并将思源内核程序加入杀毒软件信任列表。</div><div>The kernel program is not found, please reinstall SiYuan and add SiYuan Kernel prgram into the trust list of your antivirus software.</div><div><i>${kernelPath}</i></div>`);
+            showErrorWindow("内核程序丢失", "Kernel program is missing", `<div>内核程序丢失，请重新安装KMG，并将KMG内核程序加入杀毒软件信任列表。</div><div>The kernel program is not found, please reinstall KMG and add KMG Kernel prgram into the trust list of your antivirus software.</div><div><i>${kernelPath}</i></div>`);
             bootWindow.destroy();
             resolve(false);
             return;
@@ -2468,18 +2468,18 @@ const initKernel = (workspace, port, lang, safeMode) => {
                                 showWindow(workspaces[0].browserWindow);
                             }
 
-                            errorWindowId = showErrorWindow("工作空间已被锁定", "The workspace is locked", "<div>该工作空间正在被使用，请尝试在任务管理器中结束 SiYuan-Kernel 进程或者重启操作系统后再启动思源。</div><div>The workspace is being used, please try to end the SiYuan-Kernel process in the task manager or restart the operating system and then start SiYuan.</div>");
+                            errorWindowId = showErrorWindow("工作空间已被锁定", "The workspace is locked", "<div>该工作空间正在被使用，请尝试在任务管理器中结束 SiYuan-Kernel 进程或者重启操作系统后再启动KMG。</div><div>The workspace is being used, please try to end the SiYuan-Kernel process in the task manager or restart the operating system and then start KMG.</div>");
                             break;
                         case 25:
                             errorWindowId = showErrorWindow("初始化工作空间失败", "Failed to create workspace directory", "<div>工作空间文件夹权限不足，请查看 <a href=\"#\" data-log-path>~/.config/siyuan/kernel.log</a> 获取详细报错信息</div><div>Insufficient permissions for the workspace folder. Please check <a href=\"#\" data-log-path>~/.config/siyuan/kernel.log</a> for detailed error information.</div>", "⚠️", kernelLogPath);
                             break;
                         case 26:
-                            errorWindowId = showErrorWindow("文件系统访问失败", "File system access failed", "<div>思源内核无法访问所需文件，现已安全退出。可能原因包括文件或文件夹权限不足、文件为只读、文件被其他程序占用，以及同步盘或安全软件干预。</div><div>请查看 <a href=\"#\" data-log-path>工作空间/temp/siyuan.log</a> 获取详细错误信息。</div><div>SiYuan Kernel could not access a required file and has exited safely. Possible causes include insufficient permissions, read-only files, another process using a file, or interference from sync or security software.</div><div>Please check <a href=\"#\" data-log-path>workspace/temp/siyuan.log</a> for details.</div>", "⚠️", workspaceLogPath);
+                            errorWindowId = showErrorWindow("文件系统访问失败", "File system access failed", "<div>KMG内核无法访问所需文件，现已安全退出。可能原因包括文件或文件夹权限不足、文件为只读、文件被其他程序占用，以及同步盘或安全软件干预。</div><div>请查看 <a href=\"#\" data-log-path>工作空间/temp/siyuan.log</a> 获取详细错误信息。</div><div>KMG Kernel could not access a required file and has exited safely. Possible causes include insufficient permissions, read-only files, another process using a file, or interference from sync or security software.</div><div>Please check <a href=\"#\" data-log-path>workspace/temp/siyuan.log</a> for details.</div>", "⚠️", workspaceLogPath);
                             break;
                         case 0:
                             break;
                         default:
-                            errorWindowId = showErrorWindow("内核因未知原因退出", "The kernel exited for unknown reasons", `<div>思源内核因未知原因退出 [code=${code}]，请尝试重启操作系统后再启动思源。如果该问题依然发生，请检查杀毒软件是否阻止思源内核启动。</div><div>SiYuan Kernel exited for unknown reasons [code=${code}], please try to reboot your operating system and then start SiYuan again. If occurs this problem still, please check your anti-virus software whether kill the SiYuan Kernel.</div>`);
+                            errorWindowId = showErrorWindow("内核因未知原因退出", "The kernel exited for unknown reasons", `<div>KMG内核因未知原因退出 [code=${code}]，请尝试重启操作系统后再启动KMG。如果该问题依然发生，请检查杀毒软件是否阻止KMG内核启动。</div><div>KMG Kernel exited for unknown reasons [code=${code}], please try to reboot your operating system and then start KMG again. If occurs this problem still, please check your anti-virus software whether kill the KMG Kernel.</div>`);
                             break;
                     }
 
@@ -2502,7 +2502,7 @@ const initKernel = (workspace, port, lang, safeMode) => {
                 writeLog("get kernel version failed: " + e.message);
                 if (14 < ++count) {
                     writeLog("get kernel ver failed");
-                    showErrorWindow("获取内核服务端口失败", "Failed to Obtain Kernel Service Port", "<div>获取内核服务端口失败，请确保程序拥有网络权限并不受防火墙和杀毒软件阻止。</div><div>Failed to obtain kernel service port. Please ensure SiYuan has network permissions and is not blocked by firewalls or antivirus software.</div>");
+                    showErrorWindow("获取内核服务端口失败", "Failed to Obtain Kernel Service Port", "<div>获取内核服务端口失败，请确保程序拥有网络权限并不受防火墙和杀毒软件阻止。</div><div>Failed to obtain kernel service port. Please ensure KMG has network permissions and is not blocked by firewalls or antivirus software.</div>");
                     bootWindow.destroy();
                     resolve(false);
                     return;
@@ -2528,8 +2528,8 @@ const initKernel = (workspace, port, lang, safeMode) => {
                     if (Date.now() - bootShowStart > bootTimeout) {
                         writeLog("boot progress timeout after " + bootTimeout + "ms, exiting boot");
                         showErrorWindow("启动超时", "Boot timeout",
-                            "<div>内核启动超时，请查看 <a href=\"#\" data-log-path>工作空间/temp/siyuan.log</a> 获取详细报错信息，或尝试重启思源。</div>" +
-                            "<div>Kernel boot timed out. Please check <a href=\"#\" data-log-path>workspace/temp/siyuan.log</a> for details, or try restarting SiYuan.</div>",
+                            "<div>内核启动超时，请查看 <a href=\"#\" data-log-path>工作空间/temp/siyuan.log</a> 获取详细报错信息，或尝试重启KMG。</div>" +
+                            "<div>Kernel boot timed out. Please check <a href=\"#\" data-log-path>workspace/temp/siyuan.log</a> for details, or try restarting KMG.</div>",
                             "⚠️", workspaceLogPath);
                         requestKernelExit(currentKernelPort);
                         bootWindow.destroy();
@@ -3415,7 +3415,7 @@ app.whenReady().then(() => {
         const wndBounds = getWindowByContentId(event.sender.id).getBounds();
         const wndScreen = screen.getDisplayNearestPoint({x: wndBounds.x, y: wndBounds.y});
         const printWin = new BrowserWindow({
-            title: "SiYuan",
+            title: "KMG",
             show: true,
             width: Math.floor(wndScreen.size.width * 0.8),
             height: Math.floor(wndScreen.size.height * 0.8),
@@ -3433,7 +3433,7 @@ app.whenReady().then(() => {
         });
         printWin.center();
         rememberWindowKernelTarget(printWin, kernelTarget || createLocalKernelTarget());
-        printWin.webContents.userAgent = "SiYuan/" + appVer + " https://b3log.org/siyuan Electron " + printWin.webContents.userAgent;
+        printWin.webContents.userAgent = "KMG/" + appVer + " https://b3log.org/siyuan Electron " + printWin.webContents.userAgent;
         printWin.loadURL(data);
         windowNavigate(printWin, "export", (kernelTarget || createLocalKernelTarget()).origin);
     });
@@ -3490,7 +3490,7 @@ app.whenReady().then(() => {
         const mainBounds = mainWindow.getBounds();
         const mainScreen = screen.getDisplayNearestPoint({x: mainBounds.x, y: mainBounds.y});
         const win = new BrowserWindow({
-            title: "SiYuan",
+            title: "KMG",
             show: true,
             trafficLightPosition: {x: 8, y: 13},
             width: Math.floor(data.width || mainScreen.size.width * 0.7),
@@ -3521,7 +3521,7 @@ app.whenReady().then(() => {
             win.center();
         }
         win.setAlwaysOnTop(data.alwaysOnTop);
-        win.webContents.userAgent = "SiYuan/" + appVer + " https://b3log.org/siyuan Electron " + win.webContents.userAgent;
+        win.webContents.userAgent = "KMG/" + appVer + " https://b3log.org/siyuan Electron " + win.webContents.userAgent;
         win.webContents.session.setSpellCheckerLanguages(["en-US"]);
         win.loadURL(windowURL.href);
         windowNavigate(win, "window", kernelTarget.origin, kernelTarget.mode === "remote");
@@ -3602,7 +3602,7 @@ app.whenReady().then(() => {
                 tray = new Tray(path.join(appDir, "stage", "icon-large.png"));
                 const trayName = workspaceItem.ownsKernel ? path.basename(data.workspaceDir) :
                     new URL(workspaceItem.kernelTarget.origin).host;
-                tray.setToolTip(`${trayName} - SiYuan v${appVer}`);
+                tray.setToolTip(`${trayName} - KMG v${appVer}`);
                 const mainWindow = getWindowByContentId(event.sender.id);
                 if (!mainWindow || mainWindow.isDestroyed()) {
                     tray.destroy();
@@ -4094,7 +4094,7 @@ app.on("second-instance", (event, argv) => {
                 secondRemoteOrigin = normalizeRemoteKernelOrigin(secondRemoteArg);
                 writeLog("got second-instance remote kernel [origin=" + secondRemoteOrigin + "]");
                 if (!remoteKernelTarget || secondRemoteOrigin !== remoteKernelTarget.origin) {
-                    writeLog("ignored a different remote kernel while another SiYuan instance is running");
+                    writeLog("ignored a different remote kernel while another KMG instance is running");
                 }
             } catch (error) {
                 writeLog("ignored invalid second-instance remote kernel: " + error.message);

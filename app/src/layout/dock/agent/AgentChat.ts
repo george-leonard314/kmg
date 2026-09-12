@@ -302,7 +302,7 @@ export class AgentChat extends Model {
         // AI 配置保存后主动刷新模型列表；window focus 和设置对话框关闭监听用于兜底其他配置更新入口。
         window.addEventListener(AI_CONFIG_CHANGED_EVENT, this.checkConfigChangedHandler);
         window.addEventListener("focus", this.checkConfigChangedHandler);
-        // 设置对话框是 SiYuan 内部模态，关闭时 window 不失焦，focus 事件不触发。
+        // 设置对话框是 KMG 内部模态，关闭时 window 不失焦，focus 事件不触发。
         // 监听 body 子节点变化，当含 .config__panel 的设置 dialog 被移除时即时刷新。
         this.settingDialogObserver = new MutationObserver(() => {
             if (!document.querySelector(".config__panel")) {

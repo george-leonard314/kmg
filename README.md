@@ -1,3 +1,17 @@
+<!-- kmg-banner -->
+# KMG
+
+A personal rebrand of SiYuan by the SiYuan team and contributors, AGPL-3.0:
+https://github.com/siyuan-note/siyuan
+
+Upstream is tracked as the `upstream` git remote. `kmg/rebrand/rename.sh` in the
+KMG workspace is the transform applied after each upstream merge;
+`kmg/rebrand/check-rename.sh` verifies it. Internal identifiers, the `.sy` format
+and the `siyuan://` link scheme are unchanged, so upstream plugins and data work.
+The rest of this README is the upstream documentation.
+
+---
+
 <p align="center">
 <img alt="SiYuan" src="https://b3log.org/images/brand/siyuan-128.png">
 <br>

@@ -33,7 +33,7 @@ export const useShell = (cmd: "showItemInFolder" | "openPath", filePath: string)
 };
 
 /**
- * Check if the given URI is a valid SiYuan URI protocol (siyuan:// or web+siyuan://)
+ * Check if the given URI is a valid KMG URI protocol (siyuan:// or web+siyuan://)
  * @param uri - the URI to check
  */
 export const isSiYuanUriProtocol = (uri: URL | string | null | undefined): boolean => {

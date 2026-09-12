@@ -603,7 +603,7 @@ export const showPopover = async (app: App, showRef = false) => {
         });
         refDefs = postResponse.data.refDefs;
     } else if (popoverTargetElement.getAttribute("data-type")?.split(" ").includes("a")) {
-        // 以思源协议开头的链接
+        // 以KMG协议开头的链接
         const blockInfo = parseSiYuanUriInfo(popoverTargetElement.getAttribute("data-href"));
         refDefs = [{
             refID: blockInfo?.id ?? "",
@@ -612,7 +612,7 @@ export const showPopover = async (app: App, showRef = false) => {
             avGroupID: blockInfo?.avGroupID,
         }];
     } else if (popoverTargetElement.dataset.type === "url") {
-        // 在 database 的 url 列中以思源协议开头的链接
+        // 在 database 的 url 列中以KMG协议开头的链接
         const blockInfo = parseSiYuanUriInfo(popoverTargetElement.dataset.href || popoverTargetElement.textContent.trim());
         refDefs = [{
             refID: blockInfo?.id ?? "",

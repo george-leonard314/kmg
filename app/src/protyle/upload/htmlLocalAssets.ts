@@ -28,7 +28,7 @@ export const getHTMLAssetSourceURL = (html: string, baseHref?: string) => {
 
 export const resolveHTMLAssetURL = (value: string, sourceURL?: string) => {
     const path = value.trim();
-    // 明确的本地路径、思源资源和页内锚点不按网页来源展开。
+    // 明确的本地路径、KMG资源和页内锚点不按网页来源展开。
     if (!sourceURL || !path || /^(?:[a-z][a-z\d+.-]*:|\\\\|assets\/|#)/i.test(path)) {
         return value;
     }

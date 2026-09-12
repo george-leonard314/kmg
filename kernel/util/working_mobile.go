@@ -44,7 +44,7 @@ func BootMobile(container, appDir, workspaceBaseDir, lang string) {
 
 	WorkingDir = filepath.Join(appDir, "app")
 	HomeDir = filepath.Join(workspaceBaseDir, "home")
-	userHomeConfDir := filepath.Join(HomeDir, ".config", "siyuan")
+	userHomeConfDir := filepath.Join(HomeDir, ".config", "kmg")
 	logging.SetLogPath(filepath.Join(userHomeConfDir, "kernel.log"))
 
 	if !gulu.File.IsExist(userHomeConfDir) {
@@ -63,7 +63,7 @@ func BootMobile(container, appDir, workspaceBaseDir, lang string) {
 	initWorkspaceDirMobile(workspaceBaseDir)
 
 	initPathDir()
-	bootBanner := figure.NewFigure("SiYuan", "", true)
+	bootBanner := figure.NewFigure("KMG", "", true)
 	logging.LogInfo("\n" + bootBanner.String())
 	logBootInfo()
 }
@@ -74,7 +74,7 @@ func initWorkspaceDirMobile(workspaceBaseDir string) {
 		logging.LogErrorf("migrate legacy iOS workspace [%s] failed: %s", workspaceBaseDir, err)
 	}
 
-	userHomeConfDir := filepath.Join(HomeDir, ".config", "siyuan")
+	userHomeConfDir := filepath.Join(HomeDir, ".config", "kmg")
 	workspaceConf := filepath.Join(userHomeConfDir, "workspace.json")
 	defaultWorkspaceDir := filepath.Join(workspaceBaseDir, "siyuan")
 

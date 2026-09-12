@@ -1,9 +1,9 @@
 {
-  "name": "SiYuan",
+  "name": "KMG",
   "desktopName": "org.b3log.siyuan",
   "version": "3.8.3",
   "description": "From thought to insight, with agents",
-  "homepage": "https://b3log.org/siyuan",
+  "homepage": "https://github.com/george-leonard314/kmg",
   "main": "./electron/main.js",
   "packageManager": "pnpm@11.25.0",
   "scripts": {

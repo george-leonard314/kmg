@@ -1,6 +1,6 @@
 // REF https://github.com/MicrosoftEdge/Demos/blob/main/pwamp/sw.js
 
-const CACHE_NAME = `siyuan-${new URL(location.href).searchParams.get("v")}`;
+const CACHE_NAME = `kmg-${new URL(location.href).searchParams.get("v")}`;
 const INITIAL_CACHED_RESOURCES = [
     "/favicon.ico",
     "/stage/icon-large.png",

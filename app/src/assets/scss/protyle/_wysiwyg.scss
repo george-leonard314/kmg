@@ -953,7 +953,7 @@ body[data-format-painter] .protyle-wysiwyg[data-readonly="false"] {
   }
 }
 
-// 在思源中，不论只读模式还是预览点击图片都可以进行预览
+// 在KMG中，不论只读模式还是预览点击图片都可以进行预览
 .protyle .img > span:nth-child(2) {
   cursor: pointer;
 }

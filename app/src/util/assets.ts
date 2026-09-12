@@ -537,8 +537,8 @@ export const setBodyHighlight = () => {
 
     let hue, saturation, lightness;
 
-    if (name === "SiYuan") {
-        // SiYuan 专用：更艳丽的紫色
+    if (name === "KMG") {
+        // KMG 专用：更艳丽的紫色
         hue = 280;
         saturation = 85;
         lightness = 48;

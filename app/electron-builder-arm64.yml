@@ -1,10 +1,10 @@
-productName: "SiYuan"
-appId: "org.b3log.siyuan"
+productName: "KMG"
+appId: "org.kmg.notes"
 publish: null
 asar: false
 compression: "normal"
 copyright: "© 2020-present Yunnan Liandi Technology Co., Ltd."
-artifactName: "siyuan-${version}-${os}-arm64.${ext}"
+artifactName: "kmg-${version}-${os}-arm64.${ext}"
 extraMetadata:
   main: "electron/main.js"
 directories:
@@ -38,7 +38,7 @@ nsis:
   deleteAppDataOnUninstall: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: "SiYuan"
+  shortcutName: "KMG"
   license: "../LICENSE"
   include: "nsis/installer.nsh"
   warningsAsErrors: false

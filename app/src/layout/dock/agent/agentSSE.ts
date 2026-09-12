@@ -155,7 +155,7 @@ export async function fetchAgentSSE(
             headers: {
                 "Content-Type": "application/json",
                 // 标识发起者 app，后端据此排除发起者自身的 ws 广播，并做实例级互斥。
-                "X-SiYuan-App-ID": Constants.SIYUAN_APPID,
+                "X-KMG-App-ID": Constants.SIYUAN_APPID,
             },
             body: JSON.stringify(body),
             signal: signal,
