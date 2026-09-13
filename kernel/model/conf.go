@@ -440,6 +440,9 @@ func InitConf() {
 		Conf.FileTree.RecentDocsMaxListCount = conf.MaxFileTreeRecentDocsListCount
 	}
 
+	// KMG: the cloud region is fixed to North America; configs saved with the
+	// mainland China region are moved over.
+	Conf.CloudRegion = 1
 	util.CurrentCloudRegion = Conf.CloudRegion
 
 	if nil == Conf.Tag {

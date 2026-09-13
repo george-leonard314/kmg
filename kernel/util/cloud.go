@@ -16,7 +16,9 @@
 
 package util
 
-var CurrentCloudRegion = 0
+// KMG: always the North America region (liuyun.io). The mainland China
+// region and the choice between the two are removed.
+var CurrentCloudRegion = 1
 
 func IsChinaCloud() bool {
 	return 0 == CurrentCloudRegion

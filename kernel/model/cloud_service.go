@@ -817,6 +817,7 @@ func CheckActivationcode(code string) (retCode int, msg string) {
 }
 
 func Login(userName, password, captcha string, cloudRegion int) (ret *gulu.Result) {
+	cloudRegion = 1 // KMG: the cloud region is fixed to North America
 	release := lockAssetSourceChange()
 	defer release()
 	previousCloudRegion := util.CurrentCloudRegion

@@ -34,8 +34,6 @@ export const registerAccountGroup = (tab: SettingTabBuilder) => {
             window.siyuan.languages.account,
             window.siyuan.languages.accountName,
             window.siyuan.languages.password,
-            window.siyuan.languages.cloudRegionChina,
-            window.siyuan.languages.cloudRegionNorthAmerica,
             window.siyuan.languages.captcha,
             window.siyuan.languages.accountTip,
             window.siyuan.languages.login,
@@ -130,15 +128,7 @@ const genAccountAuthHTML = (mode: "login" | "deactivate") => {
         <svg class="b3-form__icon-icon"><use xlink:href="#iconLock"></use></svg>
         <input type="password" id="userPassword" class="b3-text-field b3-form__icon-input fn__block" placeholder="${window.siyuan.languages.password}">
     </div>
-    <div class="fn__hr--b"></div>
-    ${mode === "login" ? `<div class="b3-form__icon">
-            <svg class="b3-form__icon-icon"><use xlink:href="#iconFocus"></use></svg>
-            <select class="b3-select b3-form__icon-input fn__block" id="cloudRegion">
-                <option value="0"${window.siyuan.config.cloudRegion === 0 ? " selected" : ""}>${window.siyuan.languages.cloudRegionChina}</option>
-                <option value="1"${window.siyuan.config.cloudRegion === 1 ? " selected" : ""}>${window.siyuan.languages.cloudRegionNorthAmerica}</option>
-            </select>
-        </div>` : ""
-    }
+    ${mode === "login" ? "" : `<div class="fn__hr--b"></div>`}
     <div id="captchaRow" class="fn__none">
         <div class="fn__hr--b"></div>
         <div class="b3-form__img fn__flex">
@@ -417,11 +407,6 @@ const bindAccountAuthForm = (
         };
         agreeLoginCheckbox.addEventListener("change", updateLoginButton);
         userPasswordInput.addEventListener("input", updateLoginButton);
-        const cloudRegionSelect = authFormRoot.querySelector("#cloudRegion") as HTMLSelectElement;
-        cloudRegionSelect.addEventListener("change", () => {
-            window.siyuan.config.cloudRegion = parseInt(cloudRegionSelect.value);
-            authFormRoot.querySelector("#form1")!.lastElementChild!.innerHTML = genAccountAuthFooterLinksHTML();
-        });
     }
     const refreshCaptchaImg = () => {
         captchaImg.setAttribute("src", getCloudURL("captcha") + `/login?needCaptcha=${needCaptcha}&t=${Date.now()}`);
