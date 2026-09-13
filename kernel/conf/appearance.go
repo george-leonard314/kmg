@@ -44,7 +44,8 @@ type Appearance struct {
 
 func NewAppearance() *Appearance {
 	return &Appearance{
-		GlobalFontFamilies:  []*EditorFont{},
+		// KMG: Hack Nerd Font, the ChiropteraOS font, until a font is picked in settings.
+		GlobalFontFamilies:  []*EditorFont{{Family: "Hack Nerd Font", Weight: 400, DisplayName: "Hack Nerd Font"}},
 		Mode:                0,
 		ModeOS:              true,
 		ThemeDark:           "midnight",
