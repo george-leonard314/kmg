@@ -841,12 +841,6 @@ const hotKey2Electron = (key) => {
         .replace("+", "Plus").replace("⇥", "Tab").replace("⌫", "Backspace").replace("⌦", "Delete").replace("↩", "Return");
 };
 
-const getFeedbackUrl = (lang) => {
-    return "zh-CN" === lang
-        ? "https://ld246.com/article/1649901726096"
-        : "https://liuyun.io/article/1686530886208";
-};
-
 const withHotkey = (hotkey, overrideRoleDefault = false) => {
     if (typeof hotkey !== "string" || !hotkey.length) {
         // 空快捷键：自定义项不注册加速键；role 项需显式覆盖系统默认加速键
@@ -990,24 +984,6 @@ const applyMacAppMenu = (sync) => {
                     getAppWindow()?.webContents.send("siyuan-open-help");
                 },
             }]),
-            {
-                label: sync.i18n.feedback || "Feedback",
-                click: () => {
-                    shell.openExternal(getFeedbackUrl(sync.lang));
-                },
-            },
-            {
-                label: sync.i18n.officialWebsite || "Visit official website",
-                click: () => {
-                    shell.openExternal("https://b3log.org/siyuan");
-                },
-            },
-            {
-                label: sync.i18n.openSource || "Visit project on GitHub",
-                click: () => {
-                    shell.openExternal("https://github.com/siyuan-note/siyuan");
-                },
-            },
             {role: "toggledevtools", label: sync.i18n.debug || "Developer Tools"},
         ],
     }];
@@ -2778,14 +2754,6 @@ app.whenReady().then(() => {
         const trayMenuTemplate = [{
             label: mainWindow.isVisible() ? lang.hideWindow : lang.showWindow, click: () => {
                 showHideWindow(tray, lang, mainWindow);
-            },
-        }, {
-            label: lang.officialWebsite, click: () => {
-                shell.openExternal("https://b3log.org/siyuan/");
-            },
-        }, {
-            label: lang.openSource, click: () => {
-                shell.openExternal("https://github.com/siyuan-note/siyuan");
             },
         }, {
             label: lang.resetWindow, type: "checkbox", click: v => {

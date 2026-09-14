@@ -353,10 +353,6 @@ export const initRightMenu = (app: App) => {
             <div class="b3-menu__item${window.siyuan.config.readonly ? " fn__none" : ""}" id="menuHelp">
                 <svg class="b3-menu__icon"><use xlink:href="#iconHelp"></use></svg><span class="b3-menu__label">${window.siyuan.languages.userGuide}</span>
             </div>
-            <a class="b3-menu__item" href="${"zh-CN" === window.siyuan.config.lang ? "https://ld246.com/article/1649901726096" : "https://liuyun.io/article/1686530886208"}" target="_blank">
-                <svg class="b3-menu__icon"><use xlink:href="#iconFeedback"></use></svg>
-                <span class="b3-menu__label">${window.siyuan.languages.feedback}</span>
-            </a>
         </div>
     </div>
     <div class="b3-list--empty fn__none" data-type="menu-search-empty">${window.siyuan.languages.emptyContent}</div>

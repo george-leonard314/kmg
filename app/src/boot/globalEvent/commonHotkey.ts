@@ -210,10 +210,7 @@ export const syncAppMenuShortcuts = () => {
             togglefullscreen: window.siyuan.languages.appMenuTogglefullscreen,
             help: window.siyuan.languages.help,
             userGuide: window.siyuan.languages.userGuide,
-            feedback: window.siyuan.languages.feedback,
             debug: window.siyuan.languages.debug,
-            officialWebsite: window.siyuan.languages._trayMenu.officialWebsite,
-            openSource: window.siyuan.languages._trayMenu.openSource,
             bringAllToFront: window.siyuan.languages.appMenuBringAllToFront,
         },
     });
