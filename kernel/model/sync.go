@@ -365,12 +365,13 @@ func checkSync(boot, exit, byHand bool) bool {
 		}
 		return false
 	}
-	if nil == Conf.GetUser() {
-		return false
-	}
-
 	switch Conf.Sync.Provider {
 	case conf.ProviderSiYuan:
+		// Only SiYuan's cloud needs a SiYuan account; KMG's WebDAV, S3 and
+		// local sync reach the user's own storage without one.
+		if nil == Conf.GetUser() {
+			return false
+		}
 		if !IsSubscriber() {
 			Conf.Sync.Enabled = false
 			Conf.Save()

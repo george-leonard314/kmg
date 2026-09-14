@@ -1346,16 +1346,11 @@ func IsSubscriber() bool {
 	return nil != u && (-1 == u.UserSiYuanProExpireTime || 0 < u.UserSiYuanProExpireTime) && 0 == u.UserSiYuanSubscriptionStatus
 }
 
+// IsPaidUser gates the WebDAV, S3 and local sync providers. KMG syncs to
+// storage the user runs, such as their own server, so no SiYuan purchase is
+// needed. Sync through SiYuan's cloud still checks IsSubscriber.
 func IsPaidUser() bool {
-	if IsSubscriber() {
-		return true
-	}
-
-	u := Conf.GetUser()
-	if nil == u {
-		return false
-	}
-	return 1 == u.UserSiYuanOneTimePayStatus
+	return true
 }
 
 const (

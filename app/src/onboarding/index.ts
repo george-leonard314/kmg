@@ -75,7 +75,8 @@ const syncAndDismissOnSuccess = (app: App) => {
 };
 
 const loginAndSync = (app: App) => {
-    if (window.siyuan.user) {
+    // WebDAV, S3 and local sync need no SiYuan account in KMG.
+    if (window.siyuan.user || 0 !== window.siyuan.config.sync.provider) {
         if (isPaidUser()) {
             syncAndDismissOnSuccess(app);
         } else {

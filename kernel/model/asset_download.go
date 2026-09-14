@@ -96,12 +96,13 @@ func validateAssetDownloadSourceScope(scope string) error {
 }
 
 func checkAssetDownloadAccess() error {
-	if Conf.Sync == nil || !Conf.Sync.Enabled || Conf.GetUser() == nil {
+	if Conf.Sync == nil || !Conf.Sync.Enabled {
 		return errors.New(Conf.Language(376))
 	}
 	switch Conf.Sync.Provider {
 	case conf.ProviderSiYuan:
-		if !IsSubscriber() {
+		// Only SiYuan's cloud needs a SiYuan account.
+		if Conf.GetUser() == nil || !IsSubscriber() {
 			return errors.New(Conf.Language(376))
 		}
 	case conf.ProviderS3, conf.ProviderWebDAV, conf.ProviderLocal:
