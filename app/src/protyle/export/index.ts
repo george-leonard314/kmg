@@ -196,10 +196,11 @@ const renderPDF = async (id: string) => {
     }
     // Plugins such as Folder colors set theme variables inline on the root and
     // on each editor; the export window runs no plugins, so carry them over.
+    // --b3-width-* are the editor's own layout sizes and would squeeze the page.
     let inlineThemeVars = "";
     [document.documentElement, getAllEditor().find(item => item.protyle.block.rootID === id)?.protyle.element].forEach((item) => {
         for (let i = 0; item && i < item.style.length; i++) {
-            if (item.style[i].startsWith("--")) {
+            if (item.style[i].startsWith("--") && !item.style[i].startsWith("--b3-width-")) {
                 inlineThemeVars += `${item.style[i]}: ${item.style.getPropertyValue(item.style[i])};`;
             }
         }
@@ -235,6 +236,17 @@ const renderPDF = async (id: string) => {
           --b3-border-color: #d0d0d0;
           --b3-table-even-background: rgba(0, 0, 0, .03);
           --b3-protyle-code-background: rgba(0, 0, 0, .05);
+        }
+
+        #preview {
+          color: var(--b3-theme-on-background);
+        }
+
+        /* "As in KMG" prints without page margins so the background reaches the
+           paper's edges; the margins become padding repeated on every page. */
+        body.exporting:not(.paper-white) #preview {
+          -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
         }
 
         body {
@@ -917,6 +929,7 @@ ${getIconScript(servePath)}
             reserveEmbeddedAssetSpace(removeAssetsElement.checked);
             await waitForImages();
             const isPaged = actionElement.querySelector("#paged").checked;
+            const edgeToEdge = actionElement.querySelector("#paper").value === "screen";
             let exportConfig;
             if (!isPaged) {
                 const getPageSizeDimensions = () => {
@@ -931,7 +944,7 @@ ${getIconScript(servePath)}
                     };
                     return pageSizes[actionElement.querySelector("#pageSize").value];
                 };
-                const previewHeight = Math.max(previewElement.scrollHeight / 96 - (parseFloat(document.querySelector("#marginsTop").value) || 0) - (parseFloat(document.querySelector("#marginsBottom").value) || 0), getPageSizeDimensions().height);
+                const previewHeight = Math.max(previewElement.scrollHeight / 96 - (edgeToEdge ? 0 : (parseFloat(document.querySelector("#marginsTop").value) || 0) + (parseFloat(document.querySelector("#marginsBottom").value) || 0)), getPageSizeDimensions().height);
                 exportConfig = buildExportConfig(actionElement.querySelector("#landscape").checked ? {
                     height: getPageSizeDimensions().height,
                     width: previewHeight,
@@ -945,7 +958,12 @@ ${getIconScript(servePath)}
             exportConfig.filePaths = result.filePaths;
             document.body.classList.add("exporting");
             previewElement.style.zoom = "";
-            previewElement.style.padding = "6px 0 0 0";
+            if (edgeToEdge) {
+                const margins = exportConfig.pdfOptions.margins;
+                previewElement.style.padding = margins.top + "in " + margins.right + "in " + margins.bottom + "in " + margins.left + "in";
+            } else {
+                previewElement.style.padding = "6px 0 0 0";
+            }
             await fixBlockWidth();
             actionElement.remove();
             ipcRenderer.send("${Constants.SIYUAN_EXPORT_PDF}", exportConfig);

@@ -251,8 +251,14 @@ export const initWindow = async (app: App) => {
             paged: ipcData.paged,
         };
         setStorageVal(Constants.LOCAL_EXPORTPDF, window.siyuan.storage[Constants.LOCAL_EXPORTPDF]);
+        // KMG: "As in KMG" prints edge to edge; the export window has turned the
+        // margins into padding. The footer lives in the bottom margin, so it goes too.
+        const edgeToEdge = ipcData.paper === "screen";
+        if (edgeToEdge) {
+            ipcData.pdfOptions.margins = {top: 0, bottom: 0, left: 0, right: 0};
+        }
         try {
-            if (window.siyuan.config.export.pdfFooter.trim()) {
+            if (!edgeToEdge && window.siyuan.config.export.pdfFooter.trim()) {
                 const response = await fetchSyncPost("/api/template/renderSprig", {template: window.siyuan.config.export.pdfFooter});
                 ipcData.pdfOptions.displayHeaderFooter = true;
                 ipcData.pdfOptions.headerTemplate = "<span></span>";
