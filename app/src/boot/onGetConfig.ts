@@ -242,6 +242,7 @@ export const initWindow = async (app: App) => {
             landscape: ipcData.pdfOptions.landscape,
             marginType: ipcData.pdfOptions.marginType,
             pageSize: ipcData.pageSize,
+            paper: ipcData.paper,
             scale: ipcData.pdfOptions.scale,
             marginTop: ipcData.pdfOptions.margins.top,
             marginRight: ipcData.pdfOptions.margins.right,

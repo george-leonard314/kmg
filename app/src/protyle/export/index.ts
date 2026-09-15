@@ -8,6 +8,7 @@ import {afterExport} from "./util";
 /// #endif
 import {confirmDialog} from "../../dialog/confirmDialog";
 import {getThemeMode, setInlineStyle} from "../../util/assets";
+import {getAllEditor} from "../../layout/getAll";
 import {fetchPost, fetchSyncPost} from "../../util/fetch";
 import {Dialog} from "../../dialog";
 import {replaceLocalPath} from "../../editor/rename";
@@ -76,13 +77,7 @@ export const saveExport = (option: IExportOptions) => {
     }
     /// #else
     if (option.type === "pdf") {
-        if (window.siyuan.config.appearance.mode === 1) {
-            confirmDialog(window.siyuan.languages.pdfTip, window.siyuan.languages.pdfConfirm, () => {
-                renderPDF(option.id);
-            });
-        } else {
-            renderPDF(option.id);
-        }
+        renderPDF(option.id);
     } else if (option.type === "word") {
         const localData = window.siyuan.storage[Constants.LOCAL_EXPORTWORD];
         const wordDialog = new Dialog({
@@ -189,17 +184,31 @@ const renderPDF = async (id: string) => {
     }
     const servePathWithoutTrailingSlash = window.location.protocol + "//" + window.location.host;
     const servePath = servePathWithoutTrailingSlash + "/";
-    const isDefault = (window.siyuan.config.appearance.mode === 1 && window.siyuan.config.appearance.themeDark === "midnight") || (window.siyuan.config.appearance.mode === 0 && window.siyuan.config.appearance.themeLight === "daylight");
+    // KMG: the PDF keeps the theme on screen, dark included, so the export looks
+    // like the page. The "white paper" option only swaps the page's background
+    // and text colors, keeping the theme's accents.
+    const themeMode = getThemeMode();
+    const themeName = themeMode === "dark" ? window.siyuan.config.appearance.themeDark : window.siyuan.config.appearance.themeLight;
+    const defaultThemeName = themeMode === "dark" ? "midnight" : "daylight";
     let themeStyle = "";
-    if (!isDefault) {
-        themeStyle = `<link rel="stylesheet" type="text/css" id="themeStyle" href="${servePath}appearance/themes/${window.siyuan.config.appearance.themeLight}/theme.css?${Constants.SIYUAN_VERSION}"/>`;
+    if (themeName !== defaultThemeName) {
+        themeStyle = `<link rel="stylesheet" type="text/css" id="themeStyle" href="${servePath}appearance/themes/${themeName}/theme.css?${Constants.SIYUAN_VERSION}"/>`;
     }
+    // Plugins such as Folder colors set theme variables inline on the root and
+    // on each editor; the export window runs no plugins, so carry them over.
+    let inlineThemeVars = "";
+    [document.documentElement, getAllEditor().find(item => item.protyle.block.rootID === id)?.protyle.element].forEach((item) => {
+        for (let i = 0; item && i < item.style.length; i++) {
+            if (item.style[i].startsWith("--")) {
+                inlineThemeVars += `${item.style[i]}: ${item.style.getPropertyValue(item.style[i])};`;
+            }
+        }
+    });
     const currentWindowId = await ipcRenderer.invoke(Constants.SIYUAN_GET, {
         cmd: "getContentsId",
     });
-    // data-theme-mode="light" https://github.com/siyuan-note/siyuan/issues/7379
     const html = `<!DOCTYPE html>
-<html lang="${window.siyuan.config.appearance.lang}" data-theme-mode="light" data-light-theme="${window.siyuan.config.appearance.themeLight}" data-dark-theme="${window.siyuan.config.appearance.themeDark}">
+<html lang="${window.siyuan.config.appearance.lang}" data-theme-mode="${themeMode}" data-light-theme="${window.siyuan.config.appearance.themeLight}" data-dark-theme="${window.siyuan.config.appearance.themeDark}">
 <head>
     <base href="${servePath}">
     <meta charset="utf-8">
@@ -208,11 +217,26 @@ const renderPDF = async (id: string) => {
     <meta name="mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" type="text/css" id="baseStyle" href="${servePath}stage/build/export/base.css?v=${Constants.SIYUAN_VERSION}"/>
-    <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${servePath}appearance/themes/daylight/theme.css?v=${Constants.SIYUAN_VERSION}"/>
+    <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${servePath}appearance/themes/${defaultThemeName}/theme.css?v=${Constants.SIYUAN_VERSION}"/>
     <script src="${servePath}stage/protyle/js/protyle-html.js?v=${Constants.SIYUAN_VERSION}"></script>
     ${themeStyle}
     <title>${window.siyuan.languages.export} PDF</title>
     <style>
+        :root {${inlineThemeVars}}
+
+        body.paper-white #preview,
+        body.paper-white.exporting {
+          --b3-theme-background: #fff;
+          --b3-theme-background-light: rgba(0, 0, 0, .05);
+          --b3-theme-surface: #f5f5f5;
+          --b3-theme-surface-lighter: rgba(0, 0, 0, .12);
+          --b3-theme-on-background: #1f1f1f;
+          --b3-theme-on-surface: #5f5f5f;
+          --b3-border-color: #d0d0d0;
+          --b3-table-even-background: rgba(0, 0, 0, .03);
+          --b3-protyle-code-background: rgba(0, 0, 0, .05);
+        }
+
         body {
           margin: 0;
           font-family: var(--b3-font-family);
@@ -327,9 +351,19 @@ const renderPDF = async (id: string) => {
     </style>
     ${getSnippetCSS()}
 </head>
-<body style="-webkit-print-color-adjust: exact;">
+<body class="${localData.paper === "white" ? "paper-white" : ""}" style="-webkit-print-color-adjust: exact;">
 <div id="action">
     <div style="flex: 1;overflow-y:auto;overflow-x:hidden">
+        <div class="b3-label">
+            <div>
+                ${window.siyuan.languages.pdfPaper}
+            </div>
+            <span class="fn__hr"></span>
+            <select class="b3-select" id="paper">
+                <option ${localData.paper === "white" ? "" : "selected"} value="screen">${window.siyuan.languages.pdfPaperScreen}</option>
+                <option ${localData.paper === "white" ? "selected" : ""} value="white">${window.siyuan.languages.pdfPaperWhite}</option>
+            </select>
+        </div>
         <div class="b3-label">
             <div>
                 ${window.siyuan.languages.exportPDF0}
@@ -658,7 +692,7 @@ ${getIconScript(servePath)}
         document.title = response.data.name
         window.siyuan = {
           config: {
-            appearance: { mode: 0, codeBlockThemeDark: "${window.siyuan.config.appearance.codeBlockThemeDark}", codeBlockThemeLight: "${window.siyuan.config.appearance.codeBlockThemeLight}" },
+            appearance: { mode: ${themeMode === "dark" ? 1 : 0}, codeBlockThemeDark: "${window.siyuan.config.appearance.codeBlockThemeDark}", codeBlockThemeLight: "${window.siyuan.config.appearance.codeBlockThemeLight}" },
             editor: { 
               allowSVGScriptTip: ${window.siyuan.config.editor.allowSVGScript},
               allowHTMLBLockScript: ${window.siyuan.config.editor.allowHTMLBLockScript},
@@ -771,6 +805,9 @@ ${getIconScript(servePath)}
         actionElement.querySelector("#pageSize").addEventListener('change', () => {
             fixBlockWidth();
         });
+        actionElement.querySelector("#paper").addEventListener('change', (event) => {
+            document.body.classList.toggle("paper-white", event.target.value === "white");
+        });
         actionElement.querySelector("#marginsType").addEventListener('change', (event) => {
             setPadding();
             if (event.target.value === "custom") {
@@ -818,6 +855,7 @@ ${getIconScript(servePath)}
                     pageSize: unPagedPageSize || pageSize,
                 },
                 pageSize,
+                paper: actionElement.querySelector("#paper").value,
                 keepFold: keepFoldElement.checked,
                 addTitle: addTitleElement.checked,
                 customTitle: customTitleElement.value,

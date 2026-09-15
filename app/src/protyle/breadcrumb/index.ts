@@ -19,6 +19,7 @@ import {saveLayout} from "../../layout/util";
 /// #endif
 /// #if !BROWSER
 import {ipcRenderer} from "electron";
+import {saveExport} from "../export";
 /// #endif
 import {onGet} from "../util/onGet";
 import {hasUnloadedDocumentBlocks} from "../util/documentRange";
@@ -76,6 +77,11 @@ export class Breadcrumb {
 <button class="block__icon fn__flex-center ariaLabel" disabled aria-label="${window.siyuan.languages.indent}" data-type="indent"><svg><use xlink:href="#iconIndent"></use></svg></button>`;
         }
         /// #endif
+        let exportPDFHTML = "";
+        /// #if !BROWSER
+        // KMG: one click from the document to its PDF, looking as it does here.
+        exportPDFHTML = `<button class="block__icon fn__flex-center ariaLabel" data-type="export-pdf" aria-label="${window.siyuan.languages.export} PDF"><svg><use xlink:href="#iconPDF"></use></svg></button>`;
+        /// #endif
         element.innerHTML = `${isMobile() ?
             `<button class="protyle-breadcrumb__icon" data-type="mobile-menu">${window.siyuan.languages.breadcrumb}</button>` :
             '<div class="protyle-breadcrumb__bar"></div>'}
@@ -84,6 +90,7 @@ export class Breadcrumb {
 <button class="protyle-breadcrumb__icon fn__none ariaLabel" aria-label="${updateHotkeyTip(window.siyuan.config.keymap.editor.general.exitFocus.custom)}" data-type="exit-focus">${window.siyuan.languages.exitFocus}</button>
 ${padHTML}
 <button class="block__icon fn__flex-center ariaLabel${window.siyuan.config.readonly ? " fn__none" : ""}" aria-label="${window.siyuan.languages.lockEdit}" data-type="readonly" data-subtype="unlock"><svg><use xlink:href="#iconUnlock"></use></svg></button>
+${exportPDFHTML}
 <button class="block__icon fn__flex-center ariaLabel" data-type="doc" aria-label="${isMac() ? window.siyuan.languages.gutterTip2 : window.siyuan.languages.gutterTip2.replace("⇧", "Shift+")}"><svg><use xlink:href="#iconFile"></use></svg></button>
 <button class="block__icon fn__flex-center ariaLabel" data-type="more" aria-label="${window.siyuan.languages.more}"><svg><use xlink:href="#iconMore"></use></svg></button>
 <button class="block__icon fn__flex-center fn__none ariaLabel" data-type="context" aria-label="${window.siyuan.languages.context}"><svg><use xlink:href="#iconAlignCenter"></use></svg></button>`;
@@ -157,6 +164,13 @@ ${padHTML}
                         y: targetRect.bottom,
                         isLeft: true,
                     });
+                    event.stopPropagation();
+                    event.preventDefault();
+                    break;
+                } else if (type === "export-pdf") {
+                    /// #if !BROWSER
+                    saveExport({type: "pdf", id: protyle.block.rootID});
+                    /// #endif
                     event.stopPropagation();
                     event.preventDefault();
                     break;
