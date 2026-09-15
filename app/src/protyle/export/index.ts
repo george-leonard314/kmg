@@ -77,7 +77,7 @@ export const saveExport = (option: IExportOptions) => {
     }
     /// #else
     if (option.type === "pdf") {
-        renderPDF(option.id);
+        renderPDF(option.id, option.paper);
     } else if (option.type === "word") {
         const localData = window.siyuan.storage[Constants.LOCAL_EXPORTWORD];
         const wordDialog = new Dialog({
@@ -177,8 +177,9 @@ const getSnippetJS = () => {
 };
 
 /// #if !BROWSER
-const renderPDF = async (id: string) => {
+const renderPDF = async (id: string, paper?: string) => {
     const localData = window.siyuan.storage[Constants.LOCAL_EXPORTPDF];
+    paper = paper || localData.paper;
     if (typeof localData.paged === "undefined") {
         localData.paged = true;
     }
@@ -363,7 +364,7 @@ const renderPDF = async (id: string) => {
     </style>
     ${getSnippetCSS()}
 </head>
-<body class="${localData.paper === "white" ? "paper-white" : ""}" style="-webkit-print-color-adjust: exact;">
+<body class="${paper === "white" ? "paper-white" : ""}" style="-webkit-print-color-adjust: exact;">
 <div id="action">
     <div style="flex: 1;overflow-y:auto;overflow-x:hidden">
         <div class="b3-label">
@@ -372,8 +373,8 @@ const renderPDF = async (id: string) => {
             </div>
             <span class="fn__hr"></span>
             <select class="b3-select" id="paper">
-                <option ${localData.paper === "white" ? "" : "selected"} value="screen">${window.siyuan.languages.pdfPaperScreen}</option>
-                <option ${localData.paper === "white" ? "selected" : ""} value="white">${window.siyuan.languages.pdfPaperWhite}</option>
+                <option ${paper === "white" ? "" : "selected"} value="screen">${window.siyuan.languages.pdfPaperScreen}</option>
+                <option ${paper === "white" ? "selected" : ""} value="white">${window.siyuan.languages.pdfPaperWhite}</option>
             </select>
         </div>
         <div class="b3-label">

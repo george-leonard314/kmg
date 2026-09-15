@@ -936,6 +936,7 @@ interface IPluginDockTab {
 interface IExportOptions {
     type: string,
     id: string,
+    paper?: "screen" | "white", // KMG: PDF page, preselected in the export window
 }
 
 interface IOpenFileOptions {

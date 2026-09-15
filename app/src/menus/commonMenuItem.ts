@@ -683,11 +683,19 @@ export const exportMd = (id: string) => {
         },
             /// #if !BROWSER
             {
+                // KMG: the PDF page is chosen here; the export window can still switch it.
                 id: "exportPDF",
-                label: "PDF",
+                label: "PDF (as in KMG)",
                 icon: "iconPDF",
                 click: () => {
-                    saveExport({type: "pdf", id});
+                    saveExport({type: "pdf", id, paper: "screen"});
+                }
+            }, {
+                id: "exportPDFWhite",
+                label: "PDF (white paper)",
+                icon: "iconPDF",
+                click: () => {
+                    saveExport({type: "pdf", id, paper: "white"});
                 }
             }, {
                 id: "exportHTML_SiYuan",
