@@ -1,0 +1,6 @@
+src/
+pkg/
+*.pkg.tar.zst
+build.log
+# makepkg's clone of this repository
+kmg/

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=KMG
+Comment=Personal knowledge base
+Exec=kmg %U
+Icon=kmg
+Terminal=false
+Type=Application
+Categories=Office;Utility;
+StartupWMClass=kmg
+MimeType=x-scheme-handler/siyuan;

@@ -4,9 +4,11 @@
 A personal rebrand of SiYuan by the SiYuan team and contributors, AGPL-3.0:
 https://github.com/siyuan-note/siyuan
 
-Upstream is tracked as the `upstream` git remote. `kmg/rebrand/rename.sh` in the
-KMG workspace is the transform applied after each upstream merge;
-`kmg/rebrand/check-rename.sh` verifies it. Internal identifiers, the `.sy` format
+Upstream is tracked as the `upstream` git remote. Everything KMG adds lives under
+`kmg/`: `kmg/rebrand/rename.sh` is the transform applied after each upstream
+merge and `kmg/rebrand/check-rename.sh` verifies it, `kmg/docs/upstream-sync.md`
+is the merge procedure, and `kmg/packaging/arch` builds the Arch package, which
+CI attaches to each `v*-kmg*` release. Internal identifiers, the `.sy` format
 and the `siyuan://` link scheme are unchanged, so upstream plugins and data work.
 The rest of this README is the upstream documentation.
 

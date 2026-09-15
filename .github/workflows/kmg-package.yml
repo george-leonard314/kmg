@@ -1,0 +1,72 @@
+name: kmg-package
+
+# Builds the Arch package from kmg/packaging/arch and attaches it to the GitHub
+# release of the tag its PKGBUILD names. ChiropteraOS's repository build
+# downloads kmg from the latest release instead of building it.
+#
+# Named kmg-*.yml: kmg/rebrand/rename.sh deletes every other file under
+# .github, which is upstream's CI.
+
+on:
+  push:
+    tags: ['v*-kmg*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kmg-package-${{ github.ref }}
+
+jobs:
+  package:
+    name: Build and release the Arch package
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install git and gh
+        run: pacman -Syu --needed --noconfirm git github-cli
+
+      - uses: actions/checkout@v7
+
+      - name: Create the build user
+        run: |
+          useradd -m builder
+          echo 'builder ALL=(ALL) NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Check the pushed tag is the one the PKGBUILD builds
+        if: github.event_name == 'push'
+        working-directory: kmg/packaging/arch
+        run: |
+          tag=$(bash -c 'source PKGBUILD && echo "$_tag"')
+          if [ "$tag" != "$GITHUB_REF_NAME" ]; then
+            echo "PKGBUILD builds $tag, but $GITHUB_REF_NAME was pushed" >&2
+            exit 1
+          fi
+
+      - name: Build
+        # makepkg refuses to run as root. The PKGBUILD clones its tag from
+        # GitHub, the same as a local build without KMG_REPO.
+        working-directory: kmg/packaging/arch
+        run: sudo -u builder makepkg --syncdeps --noconfirm --cleanbuild
+
+      - name: Attach to the release
+        working-directory: kmg/packaging/arch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag=$(bash -c 'source PKGBUILD && echo "$_tag"')
+          file=$(ls kmg-*.pkg.tar.zst)
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --verify-tag --title "KMG ${tag#v}" \
+              --notes "Arch package, built by kmg/packaging/arch on the system Electron."
+          fi
+          # A pkgrel rebuild of the same tag replaces the older package, so the
+          # release only ever offers one.
+          for old in $(gh release view "$tag" --json assets -q '.assets[].name'); do
+            case $old in kmg-*.pkg.tar.zst) [ "$old" = "$file" ] || gh release delete-asset "$tag" "$old" -y ;; esac
+          done
+          gh release upload "$tag" "$file" --clobber

@@ -1,0 +1,87 @@
+# Maintainer: George (KMG)
+# Derived from the AUR siyuan package (zxp19821005, Xiaozhu1337): a source build
+# against the system Electron instead of the upstream AppImage.
+
+pkgname=kmg
+_srcname=kmg
+pkgver=3.8.3.kmg7
+_tag=v3.8.3-kmg7
+pkgrel=1
+_electron=electron43
+pkgdesc='KMG: personal knowledge base, a rebrand of SiYuan built on the system Electron'
+arch=('x86_64')
+url='https://github.com/george-leonard314/kmg'
+license=('AGPL-3.0-only')
+depends=("$_electron")
+makedepends=('git' 'go' 'nodejs' 'pnpm' 'gcc')
+options=('!debug')
+# Override with a local clone to build unpushed work, e.g. file:///home/g/git/kmg/siyuan
+_repo="${KMG_REPO:-$url.git}"
+source=("${_srcname}::git+${_repo}#tag=${_tag}"
+        'kmg.sh'
+        'kmg.desktop')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+_pnpm_env() {
+  export PNPM_HOME="$srcdir/.pnpm-home"
+  export npm_config_store_dir="$srcdir/.pnpm-store"
+  export npm_config_cache="$srcdir/.npm-cache"
+  export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+}
+
+_go_env() {
+  export CGO_ENABLED=1
+  export GOFLAGS='-buildvcs=false -trimpath -mod=readonly'
+  export GOMODCACHE="$srcdir/go-mod"
+  export GOCACHE="$srcdir/go-build"
+}
+
+prepare() {
+  cd "$srcdir/$_srcname/app"
+  # Pin the Electron devDependency to the system package so electron-builder
+  # packs against exactly what /usr/lib/$_electron ships. Read the version
+  # file rather than running Electron: in an unprivileged build container
+  # Chromium cannot set up its sandbox, aborts, and leaves the pin empty.
+  # The mobile bundle is not part of a desktop package.
+  local ev; ev=$(<"/usr/lib/$_electron/version")
+  [[ $ev =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]] || { echo "cannot read the $_electron version" >&2; return 1; }
+  sed -i -e '/"build:mobile"/d' \
+         -e "s/\"electron\": \"[^\"]*\"/\"electron\": \"$ev\"/" package.json
+  # desktopName becomes the Wayland app_id, which kmg.desktop and the Hyprland
+  # rules match; rename.sh sets it in the source.
+  grep -q '"desktopName": "kmg.desktop"' package.json \
+    || { echo "package.json: desktopName is not kmg.desktop" >&2; return 1; }
+  _pnpm_env
+  NODE_ENV=development pnpm install --no-frozen-lockfile
+  cd ../kernel
+  _go_env
+  go mod download
+}
+
+build() {
+  cd "$srcdir/$_srcname/kernel"
+  _go_env
+  go build -tags fts5 -o ../app/kernel-linux/SiYuan-Kernel \
+    -ldflags '-s -w -X github.com/siyuan-note/siyuan/kernel/util.Mode=prod'
+  cd ../app
+  _pnpm_env
+  NODE_ENV=production pnpm run build
+  NODE_ENV=production pnpm exec electron-builder --linux dir \
+    -c.electronDist="/usr/lib/$_electron" --config=electron-builder-linux.yml
+}
+
+package() {
+  cd "$srcdir/$_srcname/app"
+  local appdir; appdir=$(find build -name resources.pak -printf '%h\n' | head -1)
+  install -dm755 "$pkgdir/usr/lib/$pkgname"
+  cp -a "$appdir/resources/." "$pkgdir/usr/lib/$pkgname/"
+  install -Dm755 "$srcdir/kmg.sh" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "$srcdir/kmg.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+  local s
+  for s in 16 32 48 64 128 256 512; do
+    install -Dm644 "src/assets/icon/${s}x${s}.png" \
+      "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/$pkgname.png"
+  done
+  install -Dm644 ../LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 ../THIRD_PARTY_NOTICES.md "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY_NOTICES.md"
+}
