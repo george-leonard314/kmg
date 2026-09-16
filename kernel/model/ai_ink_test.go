@@ -16,7 +16,10 @@
 
 package model
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestParseInkResult(t *testing.T) {
 	cases := []struct {
@@ -42,5 +45,15 @@ func TestCheckInkImages(t *testing.T) {
 	images, err := checkInkImages([]string{"", "data:image/png;base64,iVBORw0KGgo="})
 	if err != nil || len(images) != 1 {
 		t.Errorf("got %v, %v", images, err)
+	}
+}
+
+func TestInkSystemPromptLanguage(t *testing.T) {
+	messages := buildInkMessages(&InkRequest{Mode: InkModeReply}, nil, "SALUT")
+	system := messages[0].Content
+	for _, want := range []string{"standard English by default", "clearly Romanian", "clearly Dutch", "never from the language of your earlier replies", "diacritics"} {
+		if !strings.Contains(system, want) {
+			t.Errorf("system prompt lacks %q", want)
+		}
 	}
 }

@@ -16,6 +16,7 @@
   "writeFirst": "Write something first; the AI answers what is new since its last reply.",
   "askFailed": "The AI could not answer:",
   "saveFailed": "Not saved",
+  "noTranscript": "The AI answered but could not read your handwriting as text, so search will not find this part.",
   "brokenPage": "This handwriting page is missing its data.",
   "discuss": "Discuss with AI",
   "selectFirst": "Select a passage or click an annotation first.",

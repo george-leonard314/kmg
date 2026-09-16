@@ -472,6 +472,8 @@ module.exports = class KmgInk extends Plugin {
                 const below = Math.max(bounds ? bounds.maxY : 0, lastReply ? lastReply.y + lastReply.h : 0);
                 if (result.transcript) {
                     data.items.push({type: "note", text: result.transcript});
+                } else if (fresh.length) {
+                    showMessage(i18n.noTranscript, 6000);
                 }
                 const reply = {type: "reply", text: result.reply, y: Math.round(below + 40), h: 0, mode};
                 data.items.push(reply);

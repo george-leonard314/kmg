@@ -8,6 +8,7 @@ You write by hand in KMG, and the AI writes back on the page.
   - The eraser removes whole strokes. Undo removes the last stroke that hasn't been sent yet.
 - **Ask AI:** the AI reads what you wrote since its last reply and answers under it in a handwriting font.
   - It also transcribes your handwriting and keeps that text in the block, so search finds handwritten notes.
+- **Language:** the AI replies in English, in Romanian when your writing is clearly Romanian (with or without diacritics), and in Dutch when it is clearly Dutch. A word shared by several languages, like *SALUT*, gets an English reply.
 - **Quiz me:** the AI asks a question on the note. Write your answer and press **Quiz me** again; it marks your answer and asks the next question.
 - **Discuss with AI:** select a passage in a PDF (or click an annotation) and choose **Discuss with AI** from the popup.
   - This creates a note under *AI discussions / <PDF name>* with the quote, a link back to the PDF and the AI's opening explanation, so you can keep discussing by hand.

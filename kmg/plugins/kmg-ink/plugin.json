@@ -2,7 +2,7 @@
   "name": "kmg-ink",
   "author": "george-leonard314",
   "url": "https://github.com/george-leonard314/kmg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "3.8.3",
   "disabledInPublish": true,
   "backends": ["all"],
