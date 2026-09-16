@@ -1,0 +1,140 @@
+@font-face {
+    font-family: "KMG Ink Hand";
+    src: url("/plugins/kmg-ink/fonts/Caveat.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+}
+
+.kmg-ink {
+    border: 1px solid var(--b3-border-color);
+    border-radius: var(--b3-border-radius);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.kmg-ink__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    background: var(--b3-theme-surface);
+    border-bottom: 1px solid var(--b3-border-color);
+}
+
+.kmg-ink__tool,
+.kmg-ink__ask,
+.kmg-ink__more {
+    min-width: 32px;
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: var(--b3-border-radius);
+    background: transparent;
+    color: var(--b3-theme-on-surface);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.kmg-ink__tool:hover,
+.kmg-ink__more:hover {
+    background: var(--b3-list-hover);
+}
+
+.kmg-ink__tool--on {
+    border-color: var(--b3-theme-primary);
+    color: var(--b3-theme-primary);
+}
+
+.kmg-ink__ask {
+    background: var(--b3-theme-primary);
+    color: var(--b3-theme-on-primary);
+}
+
+.kmg-ink__color {
+    width: 22px;
+    height: 22px;
+    margin: 0 2px;
+    border: 2px solid var(--b3-theme-surface);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--b3-border-color);
+}
+
+.kmg-ink__color--on {
+    box-shadow: 0 0 0 2px var(--b3-theme-primary);
+}
+
+.kmg-ink__spacer {
+    flex: 1;
+}
+
+.kmg-ink__status {
+    color: var(--b3-theme-on-surface-light);
+    font-size: 12px;
+}
+
+/* Paper stays light in every theme: ink colors and the AI's handwriting are chosen for it. */
+.kmg-ink__paper {
+    position: relative;
+    background-color: #fbf8f1;
+    background-image: linear-gradient(to bottom, transparent calc(100% - 1px), rgba(80, 110, 160, .22) calc(100% - 1px));
+    background-size: 100% 44px; /* scaled with the page in index.js */
+    min-height: 200px;
+}
+
+.kmg-ink__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    touch-action: none;
+    cursor: crosshair;
+    z-index: 1;
+}
+
+.kmg-ink__replies {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    font-family: "KMG Ink Hand", "Caveat", "Segoe Print", "Comic Neue", cursive;
+    line-height: 1.3;
+}
+
+.kmg-ink__reply {
+    position: absolute;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.kmg-ink__reply--new {
+    animation: kmg-ink-write 1.6s steps(40, end);
+}
+
+@keyframes kmg-ink-write {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+.kmg-ink--busy .kmg-ink__ask {
+    opacity: .6;
+    cursor: progress;
+}
+
+.kmg-ink__more {
+    display: block;
+    width: 100%;
+    border-radius: 0;
+    border-top: 1px solid var(--b3-border-color);
+    color: var(--b3-theme-on-surface-light);
+    font-size: 12px;
+}
+
+.kmg-ink__error {
+    padding: 8px;
+    color: var(--b3-theme-error);
+}

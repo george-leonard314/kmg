@@ -4,8 +4,8 @@
 
 pkgname=kmg
 _srcname=kmg
-pkgver=3.8.3.kmg10
-_tag=v3.8.3-kmg10
+pkgver=3.8.3.kmg11
+_tag=v3.8.3-kmg11
 pkgrel=1
 _electron=electron43
 pkgdesc='KMG: personal knowledge base, a rebrand of SiYuan built on the system Electron'
@@ -75,6 +75,8 @@ package() {
   local appdir; appdir=$(find build -name resources.pak -printf '%h\n' | head -1)
   install -dm755 "$pkgdir/usr/lib/$pkgname"
   cp -a "$appdir/resources/." "$pkgdir/usr/lib/$pkgname/"
+  # The kernel installs these into each workspace (model.InstallBundledPlugins).
+  cp -a ../kmg/plugins "$pkgdir/usr/lib/$pkgname/kmg-plugins"
   install -Dm755 "$srcdir/kmg.sh" "$pkgdir/usr/bin/$pkgname"
   install -Dm644 "$srcdir/kmg.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
   local s

@@ -1,0 +1,20 @@
+{
+  "name": "kmg-ink",
+  "author": "george-leonard314",
+  "url": "https://github.com/george-leonard314/kmg",
+  "version": "0.1.0",
+  "minAppVersion": "3.8.3",
+  "disabledInPublish": true,
+  "backends": ["all"],
+  "frontends": ["all"],
+  "displayName": {
+    "default": "KMG Ink"
+  },
+  "description": {
+    "default": "Handwriting pages where the AI writes back on the page, discussions from PDF passages, and quizzes"
+  },
+  "readme": {
+    "default": "README.md"
+  },
+  "keywords": ["handwriting", "stylus", "ink", "ai", "pdf", "quiz"]
+}

@@ -75,6 +75,7 @@ var serveCmd = &cobra.Command{
 
 		model.BootSyncData()
 		model.CleanupEmptyPluginStorageDirs()
+		model.InstallBundledPlugins()
 		model.InitBoxes()
 		model.LoadFlashcards()
 		util.LoadAssetsTexts()
