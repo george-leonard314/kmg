@@ -46,6 +46,13 @@ jobs:
             exit 1
           fi
 
+      - name: Check the bundled plugins
+        # index.js is generated from src/ and committed; it must match, and its tests must pass.
+        run: |
+          pacman -S --needed --noconfirm python nodejs
+          python kmg/plugins/kmg-ink/build.py --check
+          node kmg/plugins/kmg-ink/test/logic.test.js
+
       - name: Build
         # makepkg refuses to run as root. The PKGBUILD clones its tag from
         # GitHub, the same as a local build without KMG_REPO.

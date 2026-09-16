@@ -4,8 +4,8 @@
 
 pkgname=kmg
 _srcname=kmg
-pkgver=3.8.3.kmg12
-_tag=v3.8.3-kmg12
+pkgver=3.8.3.kmg13
+_tag=v3.8.3-kmg13
 pkgrel=1
 _electron=electron43
 pkgdesc='KMG: personal knowledge base, a rebrand of SiYuan built on the system Electron'
@@ -77,6 +77,9 @@ package() {
   cp -a "$appdir/resources/." "$pkgdir/usr/lib/$pkgname/"
   # The kernel installs these into each workspace (model.InstallBundledPlugins).
   cp -a ../kmg/plugins "$pkgdir/usr/lib/$pkgname/kmg-plugins"
+  # Sources, tests and build scripts stay out: the plugin runs from its generated index.js.
+  find "$pkgdir/usr/lib/$pkgname/kmg-plugins" -mindepth 2 -maxdepth 2 \
+    \( -name src -o -name test -o -name build.py \) -exec rm -rf {} +
   install -Dm755 "$srcdir/kmg.sh" "$pkgdir/usr/bin/$pkgname"
   install -Dm644 "$srcdir/kmg.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
   local s
